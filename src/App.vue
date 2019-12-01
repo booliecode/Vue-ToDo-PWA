@@ -51,10 +51,14 @@ const STORAGE_PREFIX = "todoApp_";
 const saveStorage = tasks => localStorage.setItem(STORAGE_PREFIX + 'tasks', JSON.stringify(tasks));
 const loadStorage = () => {
   const tasks = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'tasks'));
-  return tasks.map(task => {
-    task.date = new Date(task.date);
-    return task;
-  });
+  if(tasks) {
+    return tasks.map(task => {
+      task.date = new Date(task.date);
+      return task;
+    });
+  } else {
+    return [];
+  }
 }
 
 export default {
@@ -64,7 +68,7 @@ export default {
     Create
   },
   data: () => ({
-    tasks: loadStorage() || []
+    tasks: loadStorage()
   }),
   methods: {
     handleCreate(task) {
