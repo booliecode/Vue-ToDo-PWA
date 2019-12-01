@@ -46,6 +46,17 @@ import Item from './components/Item.vue'
 import Create from './components/create.vue'
 import {sortDate} from './helper/sort'
 
+const STORAGE_PREFIX = "todoApp_";
+
+const saveStorage = tasks => localStorage.setItem(STORAGE_PREFIX + 'tasks', JSON.stringify(tasks));
+const loadStorage = () => {
+  const tasks = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'tasks'));
+  return tasks.map(task => {
+    task.date = new Date(task.date);
+    return task;
+  });
+}
+
 export default {
   name: 'app',
   components: {
@@ -53,19 +64,21 @@ export default {
     Create
   },
   data: () => ({
-    tasks: []
+    tasks: loadStorage() || []
   }),
   methods: {
     handleCreate(task) {
       this.tasks.push(task);
       this.tasks.sort(sortDate);
+      saveStorage(this.tasks);
     },
     handleDelete(index) {
       this.tasks.splice (index, 1);
+      saveStorage(this.tasks);
     },
     handleEdit(index, newTask) {
       this.tasks[index] = newTask;
-      alert(this.tasks[index]);
+      saveStorage(this.tasks);
     }
   }
 }
