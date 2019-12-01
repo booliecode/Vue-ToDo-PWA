@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form novalidate class="md-layout" @submit.prevent="validateTask">
+    <form novalidate class="md-layout" @submit.prevent="validateTask" id="form">
       <md-card class="md-layout-item md-size-100">
         <md-card-header>
           <div class="md-title">Create Task</div>
@@ -37,33 +37,21 @@
 
 <script>
   import { validationMixin } from 'vuelidate'
-  import {
-    required,
-    minLength
-  } from 'vuelidate/lib/validators'
+  import {title, date} from '../validation/task'
 
   export default {
     name: 'FormValidation',
     mixins: [validationMixin],
     data: () => ({
       form: {
-        task: null,
-        date: null,
+        title: null,
+        date: null
       }
     }),
     validations: {
       form: {
-        title: {
-          required,
-          minLength: minLength(3)
-        },
-        date: {
-          required,
-          minValue:
-            value =>
-              new Date(value).toISOString() >= new Date(Date.now() - 24*60*60*1000).toISOString()
-              // 24h * 60min * 60s * 1000ms (yesterday same Time)
-        }
+        title: title,
+        date: date
       }
     },
     methods: {
@@ -82,9 +70,10 @@
         this.form.date = null
       },
       saveTask () {
-        this.$emit('created', {
+        this.$emit('create', {
           title: this.form.title,
-          date: this.form.date
+          date: this.form.date,
+          showForm: false
         })
         this.clearForm()
       },

@@ -30,8 +30,8 @@
     </md-app-drawer>
 
     <md-app-content>
-          <Create @created="handleCreate"/>
-          <Item v-bind:tasks="tasks"/>
+          <Create @create="handleCreate"/>
+          <Item v-bind:initTasks="tasks" @delete="handleDelete" @edit="handleEdit"/>
     </md-app-content>
   </md-app>
 </div>
@@ -44,6 +44,18 @@ import 'vue-material/dist/theme/default.css'
 import 'vue-material/dist/vue-material.js'
 import Item from './components/Item.vue'
 import Create from './components/create.vue'
+import {sortDate} from './helper/sort'
+
+const STORAGE_PREFIX = "todoApp_";
+
+const saveStorage = tasks => localStorage.setItem(STORAGE_PREFIX + 'tasks', JSON.stringify(tasks));
+const loadStorage = () => {
+  const tasks = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'tasks'));
+  return tasks.map(task => {
+    task.date = new Date(task.date);
+    return task;
+  });
+}
 
 export default {
   name: 'app',
@@ -52,11 +64,21 @@ export default {
     Create
   },
   data: () => ({
-    tasks: []
+    tasks: loadStorage() || []
   }),
   methods: {
-    handleCreate(value) {
-      this.tasks.push(value);
+    handleCreate(task) {
+      this.tasks.push(task);
+      this.tasks.sort(sortDate);
+      saveStorage(this.tasks);
+    },
+    handleDelete(index) {
+      this.tasks.splice (index, 1);
+      saveStorage(this.tasks);
+    },
+    handleEdit(index, newTask) {
+      this.tasks[index] = newTask;
+      saveStorage(this.tasks);
     }
   }
 }
