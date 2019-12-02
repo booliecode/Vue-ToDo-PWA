@@ -40,7 +40,7 @@
   import {title, date} from '../validation/task'
 
   export default {
-    name: 'FormValidation',
+    name: 'create',
     mixins: [validationMixin],
     data: () => ({
       form: {
