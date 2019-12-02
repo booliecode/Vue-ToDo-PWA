@@ -82,6 +82,7 @@ export default {
     },
     handleEdit(index, newTask) {
       this.tasks[index] = newTask;
+      this.tasks.sort(sortDate);
       saveStorage(this.tasks);
     }
   }
