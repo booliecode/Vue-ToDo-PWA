@@ -1,6 +1,6 @@
 class notificationManager {
   constructor() {
-    if (!("Notification" in window)) {
+    if (!("Notification" in window) || !('PushManager' in window)) {
         alert("This browser does not support desktop notification");
       }
 
