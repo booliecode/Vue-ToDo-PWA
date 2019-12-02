@@ -45,27 +45,20 @@ import 'vue-material/dist/vue-material.js'
 import Item from './components/Item.vue'
 import Create from './components/create.vue'
 import {sortDate} from './helper/sort'
-
-const STORAGE_PREFIX = "todoApp_";
-
-const saveStorage = tasks => localStorage.setItem(STORAGE_PREFIX + 'tasks', JSON.stringify(tasks));
-const loadStorage = () => {
-  const tasks = JSON.parse(localStorage.getItem(STORAGE_PREFIX + 'tasks'));
-  if(tasks) {
-    return tasks.map(task => {
-      task.date = new Date(task.date);
-      return task;
-    });
-  } else {
-    return [];
-  }
-}
+import {notificationHandler} from './helper/notificationManager'
+import {saveStorage, loadStorage} from './helper/storage'
 
 export default {
   name: 'app',
   components: {
     Item,
     Create
+  },
+  created: function () {
+    this.tasks.map(task => {
+      const time = (new Date(task.date) - new Date());
+      notificationHandler.sendNotifiction(task.title, time);
+    });
   },
   data: () => ({
     tasks: loadStorage()
@@ -74,14 +67,17 @@ export default {
     handleCreate(task) {
       this.tasks.push(task);
       this.tasks.sort(sortDate);
+      notificationHandler.sendNotifiction(task.title, new Date(task.date) - new Date());
       saveStorage(this.tasks);
     },
     handleDelete(index) {
       this.tasks.splice (index, 1);
       saveStorage(this.tasks);
     },
-    handleEdit(index, newTask) {
-      this.tasks[index] = newTask;
+    handleEdit(index, task) {
+      this.tasks[index] = task;
+      this.tasks.sort(sortDate);
+      notificationHandler.sendNotifiction(task.title, new Date(task.date) - new Date());
       saveStorage(this.tasks);
     }
   }

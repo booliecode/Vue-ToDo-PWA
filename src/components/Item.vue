@@ -51,7 +51,7 @@
   import { validationMixin } from 'vuelidate'
   import {title, date} from '../validation/task'
   export default {
-    name: 'RegularCards',
+    name: 'item',
     props: ['initTasks'],
     mixins: [validationMixin],
     data() {
