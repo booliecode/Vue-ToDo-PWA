@@ -1,9 +1,11 @@
 class notificationManager {
   constructor() {
-
-      if (Notification.permission !== "denied") {
-        Notification.requestPermission();
-      }
+    // Test if browser support push
+    if (!("Notification" in window) || !('PushManager' in window)) {
+      alert("This browser does not support desktop notification");
+    } else  if (Notification.permission !== "denied") {
+      Notification.requestPermission();
+    }
   }
   sendNotifiction(text, time) {
     time = (time < 0) ? 1 : time;
